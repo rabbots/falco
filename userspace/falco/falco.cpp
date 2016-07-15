@@ -271,9 +271,9 @@ int falco_init(int argc, char **argv)
 
 		inspector->set_hostname_and_port_resolution_mode(false);
 
-		for(std::vector<output_config>::iterator it = config.m_outputs.begin(); it != config.m_outputs.end(); ++it)
+		for(auto output : config.m_outputs)
 		{
-			engine->add_output(*it);
+			engine->add_output(output);
 		}
 
 		if(signal(SIGINT, signal_callback) == SIG_ERR)

@@ -11,7 +11,7 @@ void falco_configuration::init(std::list<std::string> &cmdline_options)
 {
 	init_cmdline_options(cmdline_options);
 
-	output_config stdout_output;
+	falco_engine::output_config stdout_output;
 	stdout_output.name = "stdout";
 	m_outputs.push_back(stdout_output);
 }
@@ -26,7 +26,7 @@ void falco_configuration::init(string conf_filename, std::list<std::string> &cmd
 	m_rules_filename = m_config->get_scalar<string>("rules_file", "/etc/falco_rules.yaml");
 	m_json_output = m_config->get_scalar<bool>("json_output", false);
 
-	output_config file_output;
+	falco_engine::output_config file_output;
 	file_output.name = "file";
 	if (m_config->get_scalar<bool>("file_output", "enabled", false))
 	{
@@ -40,14 +40,14 @@ void falco_configuration::init(string conf_filename, std::list<std::string> &cmd
 		m_outputs.push_back(file_output);
 	}
 
-	output_config stdout_output;
+	falco_engine::output_config stdout_output;
 	stdout_output.name = "stdout";
 	if (m_config->get_scalar<bool>("stdout_output", "enabled", false))
 	{
 		m_outputs.push_back(stdout_output);
 	}
 
-	output_config syslog_output;
+	falco_engine::output_config syslog_output;
 	syslog_output.name = "syslog";
 	if (m_config->get_scalar<bool>("syslog_output", "enabled", false))
 	{

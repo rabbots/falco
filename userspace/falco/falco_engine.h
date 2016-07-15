@@ -1,3 +1,4 @@
+#pragma once
 /* This class acts as the primary interface between a program and all
  * falco-related functionality. */
 
@@ -13,13 +14,17 @@ extern "C" {
 #include "config_falco.h"
 #include "rules.h"
 
-#include "configuration.h"
-
 class falco_engine
 {
 public:
 	falco_engine();
 	virtual ~falco_engine();
+
+	struct output_config
+	{
+		std::string name;
+		std::map<std::string, std::string> options;
+	};
 
 	bool init(string &rules_filename, bool json_output, string lua_dir = FALCO_LUA_DIR);
 

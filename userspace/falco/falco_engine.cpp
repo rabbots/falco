@@ -23,6 +23,7 @@ string lua_print_stats = "print_stats";
 using namespace std;
 
 // XXX/mstemm TODO:
+//  - DONE Move output_config type to one exported by falco_engine, so it can be shared with the falco-level configuration.
 //  - don't use sinsp_exeception
 //  - don't read a rules file, instead be handed rules content
 //  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
@@ -30,7 +31,6 @@ using namespace std;
 //  - come up with a falco_engine logging mechanism separate from falco_logger
 //  - Don't have a header file with all the built-in pathnames. Put in falco_engine class instead?
 //  - Better document main methods.
-//  - Move output_config type to one exported by falco_engine, so it can be shared with the falco-level configuration.
 
 falco_engine::falco_engine()
 {
