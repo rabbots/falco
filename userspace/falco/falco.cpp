@@ -1,12 +1,10 @@
 #define __STDC_FORMAT_MACROS
 
 #include <stdio.h>
-#include <iostream>
+#include <fstream>
 #include <signal.h>
-#include <time.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <algorithm>
 #include <unistd.h>
 #include <getopt.h>
 
