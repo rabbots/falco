@@ -24,7 +24,7 @@ using namespace std;
 
 // XXX/mstemm TODO:
 //  - DONE Move output_config type to one exported by falco_engine, so it can be shared with the falco-level configuration.
-//  - don't use sinsp_exeception
+//  - DONE don't use sinsp_exeception
 //  - don't read a rules file, instead be handed rules content
 //  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
 //  - create falco_engine library, link with it in falco.
@@ -113,12 +113,12 @@ void falco_engine::handle_event(sinsp_evt *ev)
 		{
 			const char* lerr = lua_tostring(m_ls, -1);
 			string err = "Error invoking function output: " + string(lerr);
-			throw sinsp_exception(err);
+			throw falco_engine_exception(err);
 		}
 	}
 	else
 	{
-		throw sinsp_exception("No function " + lua_on_event + " found in lua compiler module");
+		throw falco_engine_exception("No function " + lua_on_event + " found in lua compiler module");
 	}
 }
 
@@ -160,7 +160,7 @@ void falco_engine::add_output(output_config oc)
 
 	if(!lua_isfunction(m_ls, -1))
 	{
-		throw sinsp_exception("No function " + lua_add_output + " found. ");
+		throw falco_engine_exception("No function " + lua_add_output + " found. ");
 	}
 	lua_pushstring(m_ls, oc.name.c_str());
 
@@ -180,7 +180,7 @@ void falco_engine::add_output(output_config oc)
 	if(lua_pcall(m_ls, nargs, 0, 0) != 0)
 	{
 		const char* lerr = lua_tostring(m_ls, -1);
-		throw sinsp_exception(string(lerr));
+		throw falco_engine_exception(string(lerr));
 	}
 
 }
@@ -196,12 +196,12 @@ void falco_engine::print_stats()
 		{
 			const char* lerr = lua_tostring(m_ls, -1);
 			string err = "Error invoking function print_stats: " + string(lerr);
-			throw sinsp_exception(err);
+			throw falco_engine_exception(err);
 		}
 	}
 	else
 	{
-		throw sinsp_exception("No function " + lua_print_stats + " found in lua rule loader module");
+		throw falco_engine_exception("No function " + lua_print_stats + " found in lua rule loader module");
 	}
 
 }

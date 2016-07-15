@@ -34,7 +34,7 @@ void falco_configuration::init(string conf_filename, std::list<std::string> &cmd
 		filename = m_config->get_scalar<string>("file_output", "filename", "");
 		if (filename == string(""))
 		{
-			throw sinsp_exception("Error reading config file (" + m_config_file + "): file output enabled but no filename in configuration block");
+			throw std::invalid_argument("Error reading config file (" + m_config_file + "): file output enabled but no filename in configuration block");
 		}
 		file_output.options["filename"] = filename;
 		m_outputs.push_back(file_output);
@@ -56,7 +56,7 @@ void falco_configuration::init(string conf_filename, std::list<std::string> &cmd
 
 	if (m_outputs.size() == 0)
 	{
-		throw sinsp_exception("Error reading config file (" + m_config_file + "): No outputs configured. Please configure at least one output file output enabled but no filename in configuration block");
+		throw std::invalid_argument("Error reading config file (" + m_config_file + "): No outputs configured. Please configure at least one output file output enabled but no filename in configuration block");
 	}
 
 	falco_logger::log_stderr = m_config->get_scalar<bool>("log_stderr", false);
@@ -90,7 +90,7 @@ void falco_configuration::set_cmdline_option(const std::string &opt)
 	pair<string,string> subkey;
 
 	if (! split(opt, '=', keyval)) {
-		throw sinsp_exception("Error parsing config option \"" + opt + "\". Must be of the form key=val or key.subkey=val");
+		throw std::invalid_argument("Error parsing config option \"" + opt + "\". Must be of the form key=val or key.subkey=val");
 	}
 
 	if (split(keyval.first, '.', subkey)) {

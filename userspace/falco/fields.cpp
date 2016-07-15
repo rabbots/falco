@@ -2,6 +2,7 @@
 #include "chisel_api.h"
 #include "filterchecks.h"
 
+#include "falco_engine.h"
 
 extern sinsp_filter_check_list g_filterlist;
 
@@ -32,7 +33,7 @@ int falco_fields::field(lua_State *ls)
 	{
 		string err = "invalid argument passed to falco.field()";
 		fprintf(stderr, "%s\n", err.c_str());
-		throw sinsp_exception("falco.field() error");
+		throw falco_engine_exception("falco.field() error");
 	}
 	sinsp_evt* evt = (sinsp_evt*)lua_topointer(ls, 1);
 
@@ -49,7 +50,7 @@ int falco_fields::field(lua_State *ls)
 		{
 			string err = "nonexistent fieldname passed to falco.field(): " + string(fieldname);
 			fprintf(stderr, "%s\n", err.c_str());
-			throw sinsp_exception("falco.field() error");
+			throw falco_engine_exception("falco.field() error");
 		}
 
 		chk->parse_field_name(fieldname.c_str(), true);

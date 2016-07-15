@@ -47,7 +47,7 @@ static void usage()
     );
 }
 
-static void display_fatal_err(const string &msg, bool daemon)
+static void display_fatal_err(const string &msg)
 {
 	falco_logger::log(LOG_ERR, msg);
 
@@ -198,7 +198,7 @@ int falco_init(int argc, char **argv)
 
 		// Some combinations of arguments are not allowed.
 		if (daemon && pidfilename == "") {
-			throw sinsp_exception("If -d is provided, a pid file must also be provided");
+			throw std::invalid_argument("If -d is provided, a pid file must also be provided");
 		}
 
 		ifstream* conf_stream;
@@ -207,7 +207,7 @@ int falco_init(int argc, char **argv)
 			conf_stream = new ifstream(conf_filename);
 			if (!conf_stream->good())
 			{
-				throw sinsp_exception("Could not find configuration file at " + conf_filename);
+				throw std::runtime_error("Could not find configuration file at " + conf_filename);
 			}
 		}
 		else
@@ -372,15 +372,9 @@ int falco_init(int argc, char **argv)
 
 		engine->print_stats();
 	}
-	catch(sinsp_exception& e)
+	catch(exception &e)
 	{
-		display_fatal_err("Runtime error: " + string(e.what()) + ". Exiting.\n", daemon);
-
-		result = EXIT_FAILURE;
-	}
-	catch(...)
-	{
-		display_fatal_err("Unexpected error, Exiting\n", daemon);
+		display_fatal_err("Runtime error: " + string(e.what()) + ". Exiting.\n");
 
 		result = EXIT_FAILURE;
 	}

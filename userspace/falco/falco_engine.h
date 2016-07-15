@@ -14,6 +14,30 @@ extern "C" {
 #include "config_falco.h"
 #include "rules.h"
 
+
+struct falco_engine_exception : std::exception
+{
+	falco_engine_exception()
+	{
+	}
+
+	~falco_engine_exception() throw()
+	{
+	}
+
+	falco_engine_exception(string error_str)
+	{
+		m_error_str = error_str;
+	}
+
+	char const* what() const throw()
+	{
+		return m_error_str.c_str();
+	}
+
+	string m_error_str;
+};
+
 class falco_engine
 {
 public:
