@@ -43,9 +43,19 @@ function mod.syslog(evt, rule, level, format)
    falco.syslog(level, msg)
 end
 
-function mod.event(event, rule, level, format)
+local function level_of(s)
+   s = string.lower(s)
+   for i,v in ipairs(levels) do
+      if (string.find(string.lower(v), "^"..s)) then
+	 return i - 1 -- (syslog levels start at 0, lua indices start at 1)
+      end
+   end
+   error("Invalid severity level: "..s)
+end
+
+function output_event(event, rule, priority, format)
    for index,o in ipairs(outputs) do
-      o.output(event, rule, level, format, o.config)
+      o.output(event, rule, level_of(priority), format, o.config)
    end
 end
 

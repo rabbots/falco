@@ -14,14 +14,12 @@ const static struct luaL_reg ll_falco_rules [] =
 	{NULL,NULL}
 };
 
-falco_rules::falco_rules(sinsp* inspector, lua_State *ls, string lua_main_filename)
+falco_rules::falco_rules(sinsp* inspector, lua_State *ls)
 {
         m_inspector = inspector;
 	m_ls = ls;
 
 	m_lua_parser = new lua_parser(inspector, m_ls);
-
-	load_compiler(lua_main_filename);
 }
 
 void falco_rules::init(lua_State *ls)
@@ -65,28 +63,6 @@ void falco_rules::add_filter(list<uint32_t> &evttypes)
 	sinsp_filter *filter = m_lua_parser->get_filter(true);
 
 	m_inspector->add_evttype_filter(evttypes, filter);
-}
-
-void falco_rules::load_compiler(string lua_main_filename)
-{
-	ifstream is;
-	is.open(lua_main_filename);
-	if(!is.is_open())
-	{
-		throw falco_engine_exception("can't open file " + lua_main_filename);
-	}
-
-	string scriptstr((istreambuf_iterator<char>(is)),
-			 istreambuf_iterator<char>());
-
-	//
-	// Load the compiler script
-	//
-	if(luaL_loadstring(m_ls, scriptstr.c_str()) || lua_pcall(m_ls, 0, 0, 0))
-	{
-		throw falco_engine_exception("Failed to load script " +
-			lua_main_filename + ": " + lua_tostring(m_ls, -1));
-	}
 }
 
 void falco_rules::load_rules(string rules_filename, bool verbose)
@@ -166,10 +142,10 @@ void falco_rules::load_rules(string rules_filename, bool verbose)
 		{
 			const char* lerr = lua_tostring(m_ls, -1);
 			string err = "Error loading rules:" + string(lerr);
-			throw falco_engine_exception(err);
+			throw falco_exception(err);
 		}
 	} else {
-		throw falco_engine_exception("No function " + m_lua_load_rules + " found in lua rule module");
+		throw falco_exception("No function " + m_lua_load_rules + " found in lua rule module");
 	}
 }
 
@@ -189,10 +165,10 @@ void falco_rules::describe_rule(std::string *rule)
 		{
 			const char* lerr = lua_tostring(m_ls, -1);
 			string err = "Could not describe " + (rule == NULL ? "all rules" : "rule " + *rule) + ": " + string(lerr);
-			throw falco_engine_exception(err);
+			throw falco_exception(err);
 		}
 	} else {
-		throw falco_engine_exception("No function " + m_lua_describe_rule + " found in lua rule module");
+		throw falco_exception("No function " + m_lua_describe_rule + " found in lua rule module");
 	}
 }
 

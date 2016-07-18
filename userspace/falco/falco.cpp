@@ -68,6 +68,7 @@ std::list<string> cmdline_options;
 // Event processing loop
 //
 void do_inspect(falco_engine *engine,
+		falco_outputs *outputs,
 		sinsp* inspector)
 {
 	int32_t res;
@@ -109,7 +110,8 @@ void do_inspect(falco_engine *engine,
 			continue;
 		}
 
-		engine->handle_event(ev);
+		falco_engine::rule_result res = engine->handle_event(ev);
+		outputs->handle_event(res.evt, res.rule, res.priority, res.format);
 	}
 }
 
@@ -121,6 +123,7 @@ int falco_init(int argc, char **argv)
 	int result = EXIT_SUCCESS;
 	sinsp* inspector = NULL;
 	falco_engine *engine = NULL;
+	falco_outputs *outputs = NULL;
 	int op;
 	int long_index = 0;
 	string scap_filename;
@@ -147,6 +150,9 @@ int falco_init(int argc, char **argv)
 		inspector = new sinsp();
 		engine = new falco_engine();
 		engine->set_inspector(inspector);
+
+		outputs = new falco_outputs();
+		outputs->set_inspector(inspector);
 
 		//
 		// Parse the args
@@ -249,7 +255,12 @@ int falco_init(int argc, char **argv)
 			config.m_rules_filename = rules_filename;
 		}
 
-		if(!engine->init(rules_filename, config.m_json_output, verbose)) {
+		if(!engine->init(rules_filename, verbose)) {
+			result = EXIT_FAILURE;
+			goto exit;
+		}
+
+		if(!outputs->init(config.m_json_output)) {
 			result = EXIT_FAILURE;
 			goto exit;
 		}
@@ -273,7 +284,7 @@ int falco_init(int argc, char **argv)
 
 		for(auto output : config.m_outputs)
 		{
-			engine->add_output(output);
+			outputs->add_output(output);
 		}
 
 		if(signal(SIGINT, signal_callback) == SIG_ERR)
@@ -366,6 +377,7 @@ int falco_init(int argc, char **argv)
 		}
 
 		do_inspect(engine,
+			   outputs,
 			   inspector);
 
 		inspector->close();
@@ -383,6 +395,7 @@ exit:
 
 	delete inspector;
 	delete engine;
+	delete outputs;
 
 	return result;
 }

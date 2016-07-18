@@ -35,7 +35,7 @@ int falco_formats::formatter(lua_State *ls)
 	{
 		falco_logger::log(LOG_ERR, "Invalid output format '" + format + "'.\n");
 
-		throw falco_engine_exception("set_formatter error");
+		throw falco_exception("set_formatter error");
 	}
 
 	lua_pushlightuserdata(ls, formatter);
@@ -52,7 +52,7 @@ int falco_formats::format_event (lua_State *ls)
 	    !lua_isstring(ls, -3) ||
 	    !lua_islightuserdata(ls, -4)) {
 		falco_logger::log(LOG_ERR, "Invalid arguments passed to format_event()\n");
-		throw falco_engine_exception("format_event error");
+		throw falco_exception("format_event error");
 	}
 	sinsp_evt* evt = (sinsp_evt*)lua_topointer(ls, 1);
 	const char *rule = (char *) lua_tostring(ls, 2);

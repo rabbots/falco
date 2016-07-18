@@ -8,7 +8,7 @@
 class falco_rules
 {
  public:
-	falco_rules(sinsp* inspector, lua_State *ls, string lua_main_filename);
+	falco_rules(sinsp* inspector, lua_State *ls);
 	~falco_rules();
 	void load_rules(string rules_filename, bool verbose);
 	void describe_rule(string *rule);
@@ -18,8 +18,6 @@ class falco_rules
 	static int add_filter(lua_State *ls);
 
  private:
-	void load_compiler(string lua_main_filename);
-
 	void add_filter(list<uint32_t> &evttypes);
 
 	lua_parser* m_lua_parser;
@@ -30,6 +28,5 @@ class falco_rules
 	string m_lua_ignored_syscalls = "ignored_syscalls";
 	string m_lua_ignored_events = "ignored_events";
 	string m_lua_events = "events";
-	string m_lua_on_event = "on_event";
 	string m_lua_describe_rule = "describe_rule";
 };
