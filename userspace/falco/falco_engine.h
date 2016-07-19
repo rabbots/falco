@@ -27,8 +27,6 @@ public:
 	void load_rules_file(std::string &rules_filename, bool verbose);
 	void load_rules(std::string &rules_content, bool verbose);
 
-	// XXX/mstemm is there a way to avoid this data copy? Maybe
-	// it's not so bad as it's only the events that match.
 	struct rule_result {
 		sinsp_evt *evt;
 		std::string rule;
