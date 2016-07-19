@@ -36,7 +36,7 @@ falco_engine::~falco_engine()
 {
 	if (m_rules)
 	{
-//		delete m_rules;
+		delete m_rules;
 	}
 }
 
