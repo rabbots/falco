@@ -11,7 +11,11 @@ extern "C" {
 
 #include <sinsp.h>
 
-#include "config_falco.h"
+//
+// Most falco_* classes can throw exceptions. Unless directly related
+// to low-level failures like inability to open file, etc, they will
+// be of this type.
+//
 
 struct falco_exception : std::exception
 {
@@ -35,6 +39,12 @@ struct falco_exception : std::exception
 
 	std::string m_error_str;
 };
+
+//
+// This is the base class of falco_engine/falco_output. It is
+// responsible for managing a lua state and associated inspector and
+// loading a single "main" lua file into that state.
+//
 
 class falco_common
 {

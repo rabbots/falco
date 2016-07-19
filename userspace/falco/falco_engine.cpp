@@ -23,9 +23,9 @@ using namespace std;
 //  - DONE Audit use of headers to make sure appropriate headers being included everywhere.
 //  - DONE come up with a falco_engine logging mechanism separate from falco_logger
 //  - DONE don't read a rules file, instead be handed rules content
+//  - DONE Better document main methods.
 //  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
 //  - create falco_engine library, link with it in falco.
-//  - Better document main methods.
 
 falco_engine::falco_engine()
 {

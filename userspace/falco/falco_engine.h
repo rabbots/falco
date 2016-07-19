@@ -1,7 +1,4 @@
 #pragma once
-/* This class acts as the primary interface between a program and the
- * falco rules engine. Falco outputs (writing to files/syslog/etc) are
- * handled in the main program. */
 
 #include <string>
 
@@ -12,12 +9,21 @@
 #include "config_falco.h"
 #include "falco_common.h"
 
+//
+// This class acts as the primary interface between a program and the
+// falco rules engine. Falco outputs (writing to files/syslog/etc) are
+// handled in a separate class falco_outputs.
+//
+
 class falco_engine : public falco_common
 {
 public:
 	falco_engine();
 	virtual ~falco_engine();
 
+	//
+	// Load rules either directly or from a filename.
+	//
 	void load_rules_file(std::string &rules_filename, bool verbose);
 	void load_rules(std::string &rules_content, bool verbose);
 
@@ -30,14 +36,32 @@ public:
 		std::string format;
 	};
 
-	rule_result handle_event(sinsp_evt *ev);
+	//
+	// After loading rules and after matching events against the
+	// rules, ev is an event that matched some rule. Call
+	// handle_event to get details on the exact tule that matched
+	// the event.
+	//
+	// the reutrned rule_result is allocated and must be delete()d.
+	rule_result *handle_event(sinsp_evt *ev);
 
+	//
+	// Print details on the given rule. If rule is NULL, print
+	// details on all rules.
+	//
 	void describe_rule(std::string *rule);
+
+	//
+	// Get the filter associated with the current ruleset.
+	//
 	sinsp_filter *get_filter()
 	{
 		return m_rules->get_filter();
 	}
 
+	//
+	// Print statistics on how many events matched each rule.
+	//
 	void print_stats();
 
 private:

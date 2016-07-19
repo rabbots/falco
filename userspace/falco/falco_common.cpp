@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "logger.h"
+#include "config_falco.h"
 #include "falco_common.h"
 
 falco_common::falco_common()
@@ -50,9 +50,6 @@ void falco_common::init(string &lua_main_filename)
 	string scriptstr((istreambuf_iterator<char>(is)),
 			 istreambuf_iterator<char>());
 
-	//
-	// Load the compiler script
-	//
 	if(luaL_loadstring(m_ls, scriptstr.c_str()) || lua_pcall(m_ls, 0, 0, 0))
 	{
 		throw falco_exception("Failed to load script " +
