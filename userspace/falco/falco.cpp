@@ -263,7 +263,6 @@ int falco_init(int argc, char **argv)
 		outputs->init(config.m_json_output);
 
 		inspector->set_drop_event_flags(EF_DROP_FALCO);
-		inspector->set_filter(engine->get_filter());
 
 		if (describe_all_rules)
 		{
