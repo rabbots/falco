@@ -110,8 +110,9 @@ void do_inspect(falco_engine *engine,
 			continue;
 		}
 
-		falco_engine::rule_result res = engine->handle_event(ev);
-		outputs->handle_event(res.evt, res.rule, res.priority, res.format);
+		falco_engine::rule_result *res = engine->handle_event(ev);
+		outputs->handle_event(res->evt, res->rule, res->priority, res->format);
+		delete(res);
 	}
 }
 

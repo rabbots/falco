@@ -75,9 +75,9 @@ void falco_engine::load_rules_file(string &rules_filename, bool verbose)
 	load_rules(rules_content, verbose);
 }
 
-falco_engine::rule_result falco_engine::handle_event(sinsp_evt *ev)
+falco_engine::rule_result *falco_engine::handle_event(sinsp_evt *ev)
 {
-	struct rule_result res;
+	struct rule_result *res = new rule_result();
 
 	lua_getglobal(m_ls, lua_on_event.c_str());
 
@@ -92,12 +92,11 @@ falco_engine::rule_result falco_engine::handle_event(sinsp_evt *ev)
 			string err = "Error invoking function output: " + string(lerr);
 			throw falco_exception(err);
 		}
-		res.evt = ev;
+		res->evt = ev;
 		const char *p =  lua_tostring(m_ls, -3);
-		res.rule = p;
-		res.priority = lua_tostring(m_ls, -2);
-		res.format = lua_tostring(m_ls, -1);
-		return res;
+		res->rule = p;
+		res->priority = lua_tostring(m_ls, -2);
+		res->format = lua_tostring(m_ls, -1);
 	}
 	else
 	{
