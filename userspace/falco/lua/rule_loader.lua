@@ -106,14 +106,11 @@ end
 -- to a rule.
 local state = {macros={}, lists={}, filter_ast=nil, rules_by_name={}, n_rules=0, rules_by_idx={}}
 
-function load_rules(filename, rules_mgr, verbose)
+function load_rules(rules_content, verbose)
 
    compiler.set_verbose(verbose)
 
-   local f = assert(io.open(filename, "r"))
-   local s = f:read("*all")
-   f:close()
-   local rules = yaml.load(s)
+   local rules = yaml.load(rules_content)
 
    for i,v in ipairs(rules) do -- iterate over yaml list
 

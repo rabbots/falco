@@ -22,7 +22,7 @@ using namespace std;
 //  - DONE Use a base class for falco_engine/falco_outputs to handle the details of starting lua?
 //  - DONE Audit use of headers to make sure appropriate headers being included everywhere.
 //  - DONE come up with a falco_engine logging mechanism separate from falco_logger
-//  - don't read a rules file, instead be handed rules content
+//  - DONE don't read a rules file, instead be handed rules content
 //  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
 //  - create falco_engine library, link with it in falco.
 //  - Better document main methods.
@@ -40,7 +40,7 @@ falco_engine::~falco_engine()
 	}
 }
 
-bool falco_engine::init(string &rules_filename, bool verbose)
+void falco_engine::load_rules(string &rules_content, bool verbose)
 {
 	// The engine must have been given an inspector by now.
 	if(! m_inspector)
@@ -54,7 +54,25 @@ bool falco_engine::init(string &rules_filename, bool verbose)
 	falco_common::init(m_lua_main_filename);
 
 	m_rules = new falco_rules(m_inspector, m_ls);
-	m_rules->load_rules(rules_filename, verbose);
+	m_rules->load_rules(rules_content, verbose);
+}
+
+void falco_engine::load_rules_file(string &rules_filename, bool verbose)
+{
+	ifstream is;
+
+	is.open(rules_filename);
+	if (!is.is_open())
+	{
+		throw falco_exception("Could not open rules filename " +
+				      rules_filename +
+				      "for reading");
+	}
+
+	string rules_content((istreambuf_iterator<char>(is)),
+			     istreambuf_iterator<char>());
+
+	load_rules(rules_content, verbose);
 }
 
 falco_engine::rule_result falco_engine::handle_event(sinsp_evt *ev)

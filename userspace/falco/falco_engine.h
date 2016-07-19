@@ -18,7 +18,8 @@ public:
 	falco_engine();
 	virtual ~falco_engine();
 
-	bool init(std::string &rules_filename, bool verbose);
+	void load_rules_file(std::string &rules_filename, bool verbose);
+	void load_rules(std::string &rules_content, bool verbose);
 
 	// XXX/mstemm is there a way to avoid this data copy? Maybe
 	// it's not so bad as it's only the events that match.

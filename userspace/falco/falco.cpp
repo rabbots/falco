@@ -255,7 +255,8 @@ int falco_init(int argc, char **argv)
 			config.m_rules_filename = rules_filename;
 		}
 
-		engine->init(rules_filename, verbose);
+		engine->load_rules_file(rules_filename, verbose);
+
 		falco_logger::log(LOG_INFO, "Parsed rules from file " + rules_filename + "\n");
 
 		outputs->init(config.m_json_output);
