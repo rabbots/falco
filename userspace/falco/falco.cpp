@@ -207,26 +207,26 @@ int falco_init(int argc, char **argv)
 			throw std::invalid_argument("If -d is provided, a pid file must also be provided");
 		}
 
-		ifstream* conf_stream;
+		ifstream conf_stream;
 		if (conf_filename.size())
 		{
-			conf_stream = new ifstream(conf_filename);
-			if (!conf_stream->good())
+			conf_stream.open(conf_filename);
+			if (!conf_stream.is_open())
 			{
 				throw std::runtime_error("Could not find configuration file at " + conf_filename);
 			}
 		}
 		else
 		{
-			conf_stream = new ifstream(FALCO_SOURCE_CONF_FILE);
-			if (conf_stream->good())
+			conf_stream.open(FALCO_SOURCE_CONF_FILE);
+			if (!conf_stream.is_open())
 			{
 				conf_filename = FALCO_SOURCE_CONF_FILE;
 			}
 			else
 			{
-				conf_stream = new ifstream(FALCO_INSTALL_CONF_FILE);
-				if (conf_stream->good())
+				conf_stream.open(FALCO_INSTALL_CONF_FILE);
+				if (!conf_stream.is_open())
 				{
 					conf_filename = FALCO_INSTALL_CONF_FILE;
 				}

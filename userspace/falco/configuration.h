@@ -117,6 +117,9 @@ private:
 class falco_configuration
 {
  public:
+	falco_configuration();
+	virtual ~falco_configuration();
+
 	void init(std::string conf_filename, std::list<std::string> &cmdline_options);
 	void init(std::list<std::string> &cmdline_options);
 

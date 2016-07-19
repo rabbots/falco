@@ -11,6 +11,7 @@ bool s_json_output = false;
 const static struct luaL_reg ll_falco [] =
 {
 	{"formatter", &falco_formats::formatter},
+	{"free_formatter", &falco_formats::free_formatter},
 	{"format_event", &falco_formats::format_event},
 	{NULL,NULL}
 };
@@ -37,6 +38,20 @@ int falco_formats::formatter(lua_State *ls)
 	}
 
 	lua_pushlightuserdata(ls, formatter);
+
+	return 1;
+}
+
+int falco_formats::free_formatter(lua_State *ls)
+{
+	if (!lua_islightuserdata(ls, -1))
+	{
+		throw falco_exception("Invalid argument passed to free_formatter");
+	}
+
+	sinsp_evt_formatter *formatter = (sinsp_evt_formatter *) lua_topointer(ls, 1);
+
+	delete(formatter);
 
 	return 1;
 }

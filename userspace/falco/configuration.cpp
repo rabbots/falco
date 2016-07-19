@@ -3,6 +3,18 @@
 
 using namespace std;
 
+falco_configuration::falco_configuration()
+	: m_config(NULL)
+{
+}
+
+falco_configuration::~falco_configuration()
+{
+	if (m_config)
+	{
+		delete m_config;
+	}
+}
 
 // If we don't have a configuration file, we just use stdout output and all other defaults
 void falco_configuration::init(list<string> &cmdline_options)

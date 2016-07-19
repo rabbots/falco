@@ -6,10 +6,7 @@ mod.levels = levels
 
 local outputs = {}
 
-function mod.stdout(evt, rule, level, format)
-   format = "*%evt.time: "..levels[level+1].." "..format
-   formatter = falco.formatter(format)
-   msg = falco.format_event(evt, rule, levels[level+1], formatter)
+function mod.stdout(level, msg)
    print (msg)
 end
 
@@ -26,20 +23,13 @@ function mod.file_validate(options)
 
 end
 
-function mod.file(evt, rule, level, format, options)
-   format = "%evt.time: "..levels[level+1].." "..format
-   formatter = falco.formatter(format)
-   msg = falco.format_event(evt, rule, levels[level+1], formatter)
-
+function mod.file(level, msg)
    file = io.open(options.filename, "a+")
    file:write(msg, "\n")
    file:close()
 end
 
-function mod.syslog(evt, rule, level, format)
-
-   formatter = falco.formatter(format)
-   msg = falco.format_event(evt, rule, levels[level+1], formatter)
+function mod.syslog(level, msg)
    falco.syslog(level, msg)
 end
 
@@ -54,9 +44,16 @@ local function level_of(s)
 end
 
 function output_event(event, rule, priority, format)
+   local level = level_of(priority)
+   format = "*%evt.time: "..levels[level+1].." "..format
+   formatter = falco.formatter(format)
+   msg = falco.format_event(event, rule, levels[level+1], formatter)
+
    for index,o in ipairs(outputs) do
-      o.output(event, rule, level_of(priority), format, o.config)
+      o.output(level, msg)
    end
+
+   falco.free_formatter(formatter)
 end
 
 function add_output(output_name, config)
