@@ -32,8 +32,7 @@ int falco_rules::add_filter(lua_State *ls)
 	if (! lua_islightuserdata(ls, -2) ||
 	    ! lua_istable(ls, -1))
 	{
-		falco_logger::log(LOG_ERR, "Invalid arguments passed to add_filter()\n");
-		throw sinsp_exception("add_filter error");
+		throw falco_exception("Invalid arguments passed to add_filter()\n");
 	}
 
 	falco_rules *rules = (falco_rules *) lua_topointer(ls, -2);
@@ -136,8 +135,9 @@ void falco_rules::load_rules(string &rules_content, bool verbose)
 		lua_setglobal(m_ls, m_lua_ignored_syscalls.c_str());
 
 		lua_pushstring(m_ls, rules_content.c_str());
+		lua_pushlightuserdata(m_ls, this);
 		lua_pushboolean(m_ls, (verbose ? 1 : 0));
-		if(lua_pcall(m_ls, 2, 0, 0) != 0)
+		if(lua_pcall(m_ls, 3, 0, 0) != 0)
 		{
 			const char* lerr = lua_tostring(m_ls, -1);
 			string err = "Error loading rules:" + string(lerr);
