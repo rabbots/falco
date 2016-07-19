@@ -106,7 +106,7 @@ end
 -- to a rule.
 local state = {macros={}, lists={}, filter_ast=nil, rules_by_name={}, n_rules=0, rules_by_idx={}}
 
-function load_rules(rules_content, verbose)
+function load_rules(rules_content, rules_mgr, verbose)
 
    compiler.set_verbose(verbose)
 
