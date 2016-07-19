@@ -52,6 +52,7 @@ void falco_engine::load_rules(string &rules_content, bool verbose)
 	luaopen_yaml(m_ls);
 
 	falco_common::init(m_lua_main_filename);
+	falco_rules::init(m_ls);
 
 	m_rules = new falco_rules(m_inspector, m_ls);
 	m_rules->load_rules(rules_content, verbose);
