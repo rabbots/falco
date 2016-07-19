@@ -19,7 +19,7 @@ public:
 		std::map<std::string, std::string> options;
 	};
 
-	bool init(bool json_output);
+	void init(bool json_output);
 
 	void add_output(output_config oc);
 

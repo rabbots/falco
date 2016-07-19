@@ -16,12 +16,12 @@ falco_outputs::~falco_outputs()
 
 }
 
-bool falco_outputs::init(bool json_output)
+void falco_outputs::init(bool json_output)
 {
 	// The engine must have been given an inspector by now.
 	if(! m_inspector)
 	{
-		return false;
+		throw falco_exception("No inspector provided");
 	}
 
 	falco_common::init(m_lua_main_filename);
@@ -29,9 +29,6 @@ bool falco_outputs::init(bool json_output)
 	falco_formats::init(m_inspector, m_ls, json_output);
 
 	falco_logger::init(m_ls);
-
-	return true;
-
 }
 
 void falco_outputs::add_output(output_config oc)

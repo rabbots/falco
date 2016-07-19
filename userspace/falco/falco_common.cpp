@@ -22,7 +22,7 @@ void falco_common::set_inspector(sinsp *inspector)
 	m_inspector = inspector;
 }
 
-bool falco_common::init(string &lua_main_filename)
+void falco_common::init(string &lua_main_filename)
 {
 	ifstream is;
 	string lua_dir = FALCO_LUA_DIR;
@@ -37,10 +37,9 @@ bool falco_common::init(string &lua_main_filename)
 		is.open(lua_main_path);
 		if (!is.is_open())
 		{
-			falco_logger::log(LOG_ERR, "Could not find Falco Lua entrypoint (tried " +
-					  string(FALCO_LUA_DIR) + lua_main_filename + ", " +
-					  string(FALCO_SOURCE_LUA_DIR) + lua_main_filename + "). Exiting.\n");
-			return false;
+			throw falco_exception("Could not find Falco Lua entrypoint (tried " +
+					      string(FALCO_LUA_DIR) + lua_main_filename + ", " +
+					      string(FALCO_SOURCE_LUA_DIR) + lua_main_filename + ")");
 		}
 	}
 
@@ -59,8 +58,6 @@ bool falco_common::init(string &lua_main_filename)
 		throw falco_exception("Failed to load script " +
 			lua_main_path + ": " + lua_tostring(m_ls, -1));
 	}
-
-	return true;
 }
 
 void falco_common::add_lua_path(string &path)

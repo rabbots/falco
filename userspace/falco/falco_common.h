@@ -42,7 +42,7 @@ public:
 	falco_common();
 	virtual ~falco_common();
 
-	bool init(std::string &lua_main_filename);
+	void init(std::string &lua_main_filename);
 
 	void set_inspector(sinsp *inspector);
 

@@ -255,15 +255,10 @@ int falco_init(int argc, char **argv)
 			config.m_rules_filename = rules_filename;
 		}
 
-		if(!engine->init(rules_filename, verbose)) {
-			result = EXIT_FAILURE;
-			goto exit;
-		}
+		engine->init(rules_filename, verbose);
+		falco_logger::log(LOG_INFO, "Parsed rules from file " + rules_filename + "\n");
 
-		if(!outputs->init(config.m_json_output)) {
-			result = EXIT_FAILURE;
-			goto exit;
-		}
+		outputs->init(config.m_json_output);
 
 		inspector->set_drop_event_flags(EF_DROP_FALCO);
 		inspector->set_filter(engine->get_filter());

@@ -7,7 +7,6 @@ extern "C" {
 #include "lyaml.h"
 }
 
-#include "logger.h"
 #include "utils.h"
 #include <yaml-cpp/yaml.h>
 
@@ -22,10 +21,10 @@ using namespace std;
 //  - DONE don't use sinsp_exeception
 //  - DONE Use a base class for falco_engine/falco_outputs to handle the details of starting lua?
 //  - DONE Audit use of headers to make sure appropriate headers being included everywhere.
+//  - DONE come up with a falco_engine logging mechanism separate from falco_logger
 //  - don't read a rules file, instead be handed rules content
 //  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
 //  - create falco_engine library, link with it in falco.
-//  - come up with a falco_engine logging mechanism separate from falco_logger
 //  - Better document main methods.
 
 falco_engine::falco_engine()
@@ -41,13 +40,12 @@ falco_engine::~falco_engine()
 	}
 }
 
-
 bool falco_engine::init(string &rules_filename, bool verbose)
 {
 	// The engine must have been given an inspector by now.
 	if(! m_inspector)
 	{
-		return false;
+		throw falco_exception("No inspector provided");
 	}
 
 	luaopen_lpeg(m_ls);
@@ -57,10 +55,6 @@ bool falco_engine::init(string &rules_filename, bool verbose)
 
 	m_rules = new falco_rules(m_inspector, m_ls);
 	m_rules->load_rules(rules_filename, verbose);
-
-	falco_logger::log(LOG_INFO, "Parsed rules from file " + rules_filename + "\n");
-
-	return true;
 }
 
 falco_engine::rule_result falco_engine::handle_event(sinsp_evt *ev)
