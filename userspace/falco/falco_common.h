@@ -53,8 +53,6 @@ protected:
 
 private:
 	void add_lua_path(std::string &path);
-	std::string m_installed_path = FALCO_LUA_DIR;
-	std::string m_source_path = FALCO_SOURCE_LUA_DIR;
 };
 
 

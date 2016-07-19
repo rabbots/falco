@@ -25,21 +25,21 @@ void falco_common::set_inspector(sinsp *inspector)
 bool falco_common::init(string &lua_main_filename)
 {
 	ifstream is;
-	string lua_dir = m_installed_path;
+	string lua_dir = FALCO_LUA_DIR;
 	string lua_main_path = lua_dir + lua_main_filename;
 
 	is.open(lua_main_path);
 	if (!is.is_open())
 	{
-		lua_dir = m_source_path;
+		lua_dir = FALCO_SOURCE_LUA_DIR;
 		lua_main_path = lua_dir + lua_main_filename;
 
 		is.open(lua_main_path);
 		if (!is.is_open())
 		{
 			falco_logger::log(LOG_ERR, "Could not find Falco Lua entrypoint (tried " +
-					  m_installed_path + lua_main_filename + ", " +
-					  m_source_path + lua_main_filename + "). Exiting.\n");
+					  string(FALCO_LUA_DIR) + lua_main_filename + ", " +
+					  string(FALCO_SOURCE_LUA_DIR) + lua_main_filename + "). Exiting.\n");
 			return false;
 		}
 	}

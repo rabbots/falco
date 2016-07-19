@@ -26,7 +26,6 @@ using namespace std;
 //  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
 //  - create falco_engine library, link with it in falco.
 //  - come up with a falco_engine logging mechanism separate from falco_logger
-//  - Don't have a header file with all the built-in pathnames. Put in falco_engine class instead?
 //  - Better document main methods.
 
 falco_engine::falco_engine()
