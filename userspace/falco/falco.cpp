@@ -110,9 +110,17 @@ void do_inspect(falco_engine *engine,
 			continue;
 		}
 
-		falco_engine::rule_result *res = engine->handle_event(ev);
-		outputs->handle_event(res->evt, res->rule, res->priority, res->format);
-		delete(res);
+		// As the inspector has no filter at its level, all
+		// events are returned here. Pass them to the falco
+		// engine, which will match the event against the set
+		// of rules. If a match is found, pass the event to
+		// the outputs.
+		falco_engine::rule_result *res = engine->process_event(ev);
+		if(res)
+		{
+			outputs->handle_event(res->evt, res->rule, res->priority, res->format);
+			delete(res);
+		}
 	}
 }
 

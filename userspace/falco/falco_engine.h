@@ -3,6 +3,7 @@
 #include <string>
 
 #include "sinsp.h"
+#include "filter.h"
 
 #include "rules.h"
 
@@ -35,13 +36,12 @@ public:
 	};
 
 	//
-	// After loading rules and after matching events against the
-	// rules, ev is an event that matched some rule. Call
-	// handle_event to get details on the exact tule that matched
-	// the event.
+	// Given an event, check it against the set of rules in the
+	// engine and if a matching rule is found, return details on
+	// the rule that matched. If no rule matched, returns NULL.
 	//
 	// the reutrned rule_result is allocated and must be delete()d.
-	rule_result *handle_event(sinsp_evt *ev);
+	rule_result *process_event(sinsp_evt *ev);
 
 	//
 	// Print details on the given rule. If rule is NULL, print
@@ -50,20 +50,21 @@ public:
 	void describe_rule(std::string *rule);
 
 	//
-	// Get the filter associated with the current ruleset.
-	//
-	sinsp_filter *get_filter()
-	{
-		return m_rules->get_filter();
-	}
-
-	//
 	// Print statistics on how many events matched each rule.
 	//
 	void print_stats();
 
+	//
+	// Add a filter, which is related to the specified list of
+	// event types, to the engine.
+	//
+	void add_evttype_filter(list<uint32_t> &evttypes,
+				sinsp_filter* filter);
+
 private:
 	falco_rules *m_rules;
+        sinsp_evttype_filter m_evttype_filter;
+
 	std::string m_lua_main_filename = "rule_loader.lua";
 };
 

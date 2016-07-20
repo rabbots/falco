@@ -14,11 +14,9 @@ const static struct luaL_reg ll_falco_rules [] =
 	{NULL,NULL}
 };
 
-falco_rules::falco_rules(sinsp* inspector, lua_State *ls)
+falco_rules::falco_rules(sinsp* inspector, falco_engine *engine, lua_State *ls)
+	: m_inspector(inspector), m_engine(engine), m_ls(ls)
 {
-        m_inspector = inspector;
-	m_ls = ls;
-
 	m_lua_parser = new lua_parser(inspector, m_ls);
 }
 
@@ -58,10 +56,10 @@ void falco_rules::add_filter(list<uint32_t> &evttypes)
 {
 	// While the current rule was being parsed, a sinsp_filter
 	// object was being populated by lua_parser. Grab that filter
-	// and pass it to the inspector.
+	// and pass it to the engine.
 	sinsp_filter *filter = m_lua_parser->get_filter(true);
 
-	m_inspector->add_evttype_filter(evttypes, filter);
+	m_engine->add_evttype_filter(evttypes, filter);
 }
 
 void falco_rules::load_rules(string &rules_content, bool verbose)
@@ -171,11 +169,6 @@ void falco_rules::describe_rule(std::string *rule)
 	}
 }
 
-
-sinsp_filter* falco_rules::get_filter()
-{
-	return m_lua_parser->get_filter();
-}
 
 falco_rules::~falco_rules()
 {

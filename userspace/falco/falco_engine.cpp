@@ -24,7 +24,12 @@ using namespace std;
 //  - DONE come up with a falco_engine logging mechanism separate from falco_logger
 //  - DONE don't read a rules file, instead be handed rules content
 //  - DONE Better document main methods.
-//  - lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
+//  - DONE lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
+//  - DONE Break out evttype filters within sysdig into standalone class sinsp_evttype_filter.
+//  - DONE Include a sinsp_evttype_filter object within falco_engine and
+//         add filters to it instead of inspector. Add
+//         falco_engine::process_evt() method and try calling it from
+//         outside the inspector entirely.
 //  - create falco_engine library, link with it in falco.
 
 falco_engine::falco_engine()
@@ -54,7 +59,7 @@ void falco_engine::load_rules(string &rules_content, bool verbose)
 	falco_common::init(m_lua_main_filename);
 	falco_rules::init(m_ls);
 
-	m_rules = new falco_rules(m_inspector, m_ls);
+	m_rules = new falco_rules(m_inspector, this, m_ls);
 	m_rules->load_rules(rules_content, verbose);
 }
 
@@ -76,8 +81,13 @@ void falco_engine::load_rules_file(string &rules_filename, bool verbose)
 	load_rules(rules_content, verbose);
 }
 
-falco_engine::rule_result *falco_engine::handle_event(sinsp_evt *ev)
+falco_engine::rule_result *falco_engine::process_event(sinsp_evt *ev)
 {
+	if(!m_evttype_filter.run(ev))
+	{
+		return NULL;
+	}
+
 	struct rule_result *res = new rule_result();
 
 	lua_getglobal(m_ls, lua_on_event.c_str());
@@ -107,6 +117,11 @@ falco_engine::rule_result *falco_engine::handle_event(sinsp_evt *ev)
 	return res;
 }
 
+void falco_engine::describe_rule(string *rule)
+{
+	return m_rules->describe_rule(rule);
+}
+
 // Print statistics on the the rules that triggered
 void falco_engine::print_stats()
 {
@@ -128,7 +143,10 @@ void falco_engine::print_stats()
 
 }
 
-void falco_engine::describe_rule(string *rule)
+void falco_engine::add_evttype_filter(list<uint32_t> &evttypes,
+				      sinsp_filter* filter)
 {
-	return m_rules->describe_rule(rule);
+	m_evttype_filter.add(evttypes, filter);
 }
+
+
