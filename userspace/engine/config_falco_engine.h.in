@@ -1,0 +1,4 @@
+#pragma once
+
+#define FALCO_ENGINE_LUA_DIR "/usr/share/falco/lua/"
+#define FALCO_ENGINE_SOURCE_LUA_DIR "${PROJECT_SOURCE_DIR}/userspace/engine/lua/"

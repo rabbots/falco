@@ -188,7 +188,7 @@ ExternalProject_Add(lyaml
                     BUILD_COMMAND ${CMD_MAKE}
                     BUILD_IN_SOURCE 1
 		    CONFIGURE_COMMAND ./configure --enable-static LIBS=-L../../../libyaml-prefix/src/libyaml/src/.libs CFLAGS=-I../../../libyaml-prefix/src/libyaml/include CPPFLAGS=-I../../../libyaml-prefix/src/libyaml/include LUA_INCLUDE=-I../../../luajit-prefix/src/luajit/src LUA=../../../luajit-prefix/src/luajit/src/luajit
-                    INSTALL_COMMAND sh -c "cp -R ${PROJECT_BINARY_DIR}/lyaml-prefix/src/lyaml/lib/* ${PROJECT_SOURCE_DIR}/userspace/falco/lua")
+                    INSTALL_COMMAND sh -c "cp -R ${PROJECT_BINARY_DIR}/lyaml-prefix/src/lyaml/lib/* ${PROJECT_SOURCE_DIR}/userspace/engine/lua")
 
 install(FILES falco.yaml
 	DESTINATION "${DIR_ETC}")
@@ -199,6 +199,7 @@ add_subdirectory("${SYSDIG_DIR}/userspace/libsinsp" "${PROJECT_BINARY_DIR}/users
 
 add_subdirectory(rules)
 add_subdirectory(scripts)
+add_subdirectory(userspace/engine)
 add_subdirectory(userspace/falco)
 
 

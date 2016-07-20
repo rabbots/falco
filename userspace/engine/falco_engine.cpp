@@ -1,6 +1,7 @@
 #include <string>
 
 #include "falco_engine.h"
+#include "config_falco_engine.h"
 
 extern "C" {
 #include "lpeg.h"
@@ -30,9 +31,10 @@ using namespace std;
 //         add filters to it instead of inspector. Add
 //         falco_engine::process_evt() method and try calling it from
 //         outside the inspector entirely.
-//  - create falco_engine library, link with it in falco.
+//  - DONE create falco_engine library, link with it in falco.
 
 falco_engine::falco_engine()
+	: m_rules(NULL)
 {
 
 }
@@ -56,7 +58,7 @@ void falco_engine::load_rules(string &rules_content, bool verbose)
 	luaopen_lpeg(m_ls);
 	luaopen_yaml(m_ls);
 
-	falco_common::init(m_lua_main_filename);
+	falco_common::init(m_lua_main_filename.c_str(), FALCO_ENGINE_SOURCE_LUA_DIR);
 	falco_rules::init(m_ls);
 
 	m_rules = new falco_rules(m_inspector, this, m_ls);
