@@ -62,7 +62,7 @@ function print_test_failure_details() {
     jq '.tests[] | select(.status != "PASS") | .logfile' $SCRIPTDIR/job-results/latest/results.json  | xargs cat
 }
 
-#download_trace_files
+download_trace_files
 prepare_multiplex_file
 run_tests
 if [ $TEST_RC -ne 0 ]; then
