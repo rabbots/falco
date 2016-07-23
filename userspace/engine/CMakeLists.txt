@@ -12,16 +12,12 @@ include_directories("${DRAIOS_DEPENDENCIES_DIR}/yaml-${DRAIOS_YAML_VERSION}/targ
 add_definitions(-DK8S_DISABLE_THREAD)
 
 add_library(falco_engine STATIC rules.cpp falco_common.cpp falco_engine.cpp)
-add_library(falco_engine_objs OBJECT rules.cpp falco_common.cpp falco_engine.cpp)
-
-set(FALCO_ENGINE_LIBRARIES
-	"${LPEG_SRC}/lpeg.a"
-	"${LYAML_LIB}"
-        "${LIBYAML_LIB}"
-	PARENT_SCOPE)
 
 target_link_libraries(falco_engine
-  ${FALCO_ENGINE_LIBRARIES})
+  "${FALCO_SINSP_LIBRARY}"
+  "${LPEG_SRC}/lpeg.a"
+  "${LYAML_LIB}"
+  "${LIBYAML_LIB}")
 
 configure_file(config_falco_engine.h.in config_falco_engine.h)
 

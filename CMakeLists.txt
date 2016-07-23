@@ -199,6 +199,7 @@ add_subdirectory("${SYSDIG_DIR}/userspace/libsinsp" "${PROJECT_BINARY_DIR}/users
 
 add_subdirectory(rules)
 add_subdirectory(scripts)
+set(FALCO_SINSP_LIBRARY sinsp)
 add_subdirectory(userspace/engine)
 add_subdirectory(userspace/falco)
 
