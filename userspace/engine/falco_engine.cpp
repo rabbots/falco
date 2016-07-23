@@ -17,22 +17,6 @@ string lua_print_stats = "print_stats";
 
 using namespace std;
 
-// XXX/mstemm TODO:
-//  - DONE Move output_config type to one exported by falco_engine, so it can be shared with the falco-level configuration.
-//  - DONE don't use sinsp_exeception
-//  - DONE Use a base class for falco_engine/falco_outputs to handle the details of starting lua?
-//  - DONE Audit use of headers to make sure appropriate headers being included everywhere.
-//  - DONE come up with a falco_engine logging mechanism separate from falco_logger
-//  - DONE don't read a rules file, instead be handed rules content
-//  - DONE Better document main methods.
-//  - DONE lua_close is being called multiple times--change lua_parser.cpp to not own lua state and try to close it. Currently falco_rules is leaking.
-//  - DONE Break out evttype filters within sysdig into standalone class sinsp_evttype_filter.
-//  - DONE Include a sinsp_evttype_filter object within falco_engine and
-//         add filters to it instead of inspector. Add
-//         falco_engine::process_evt() method and try calling it from
-//         outside the inspector entirely.
-//  - DONE create falco_engine library, link with it in falco.
-
 falco_engine::falco_engine()
 	: m_rules(NULL)
 {
